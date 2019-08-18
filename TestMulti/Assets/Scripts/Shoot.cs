@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Shoot : MonoBehaviour
 {
-    [SerializeField] private int damage = 100;
+    [SerializeField] private int damage = 0;
 
     void Update()
     {
