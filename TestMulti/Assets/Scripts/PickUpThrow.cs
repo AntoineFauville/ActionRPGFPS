@@ -32,8 +32,6 @@ public class PickUpThrow : MonoBehaviour
                         {
                             photonView = hit.collider.gameObject.GetComponent<PhotonView>();
                             GrabObject(photonView);
-                            photonView.RPC("SwitchState", PhotonTargets.All, PickableStates.CantBePickedUp);
-                            _carryObject = true;
                         }
                         else
                         {
@@ -52,20 +50,25 @@ public class PickUpThrow : MonoBehaviour
         {
             ThrowObject();
         }
+
+        if (_carryObject)
+        {
+            photonView.transform.position = _objectLocation.transform.position;
+        }
     }
 
     void GrabObject(PhotonView photonView)
     {
+        _carryObject = true;
         photonView.RPC("SwitchState", PhotonTargets.All, PickableStates.CantBePickedUp);
-        photonView.transform.SetParent(_objectLocation.transform);
-        photonView.transform.localPosition = new Vector3();
-        photonView.transform.localRotation = new Quaternion();
+        //photonView.transform.SetParent(_objectLocation.transform);
+        //photonView.transform.position = _objectLocation.transform.position;
     }
 
     void ThrowObject()
     {
         _carryObject = false;
-        photonView.transform.parent = null;
+        //photonView.transform.parent = null;
         photonView.RPC("SwitchState", PhotonTargets.All, PickableStates.CanBePickedUp);
         photonView.GetComponent<Rigidbody>().AddForce(this.transform.forward * throwForce);
     }
@@ -73,7 +76,7 @@ public class PickUpThrow : MonoBehaviour
     void ReleaseObject()
     {
         _carryObject = false;
-        photonView.transform.parent = null;
+        //photonView.transform.parent = null;
         photonView.RPC("SwitchState", PhotonTargets.All, PickableStates.CanBePickedUp);
     }
 }
